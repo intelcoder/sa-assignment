@@ -1,9 +1,9 @@
 import { configureStore, Action } from '@reduxjs/toolkit';
-
+import cryptoMarketPageReducer from 'redux/CryptoMarketPage/reducer'
 
 export const store = configureStore({
   reducer: {
-
+    cryptoMarketData: cryptoMarketPageReducer
   },
 });
 

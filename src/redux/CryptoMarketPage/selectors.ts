@@ -1,4 +1,3 @@
 
 
-
-export const selectQuotes = (state: any) => state.cryptoMarketData.quotes
+export const selectCoinIds = (state: any) => state.cryptoMarketData.selectedCoinIds

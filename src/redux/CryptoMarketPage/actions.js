@@ -1,7 +1,12 @@
 import { actionCreator } from '../utils'
 
-export const ADD_COIN_QUOTE = 'ADD_COIN_QUOTE'
-export const addCoinQuote = (payload) => actionCreator(ADD_COIN_QUOTE, { payload })
 
-export const REMOVE_COIN_QUOTE = 'REMOVE_COIN_QUOTE'
-export const removeCoinQuote = (payload) => actionCreator(REMOVE_COIN_QUOTE, { payload })
+export const SET_SELECTED_COIN_IDS = 'setSelectedCoins'
+export const setSelectedCoinIds = (payload) => actionCreator(SET_SELECTED_COIN_IDS, { payload })
+
+
+export const SELECT_COIN_ID = 'selectCoinId'
+export const selectCoinId = (payload) => actionCreator(SELECT_COIN_ID, { payload })
+
+export const DELETE_COIN_ID = 'deleteCoinId'
+export const deleteCoinId = (payload) => actionCreator(DELETE_COIN_ID, { payload })

@@ -9,7 +9,7 @@ export interface IQuote {
   }
 }
 
+export type TQuotes = Map<string, IQuote>
 export interface IState {
-  quotes: IQuote[]
-
+  quotes: TQuotes
 }

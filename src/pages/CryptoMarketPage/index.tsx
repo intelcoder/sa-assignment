@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
+import Container from '@material-ui/core/Container';
 import { addCoinQuote } from 'redux/CryptoMarketPage/actions'
-import { IQuote } from 'redux/CryptoMarketPage/types'
+import { TQuotes } from 'redux/CryptoMarketPage/types'
 import { selectQuotes } from 'redux/CryptoMarketPage/selectors'
 import CryptoMarketTable from 'components/CryptoMarketTable'
 import Dropdown from 'components/Dropdown'
@@ -16,7 +17,6 @@ const cryptoFetcher = async (url: string, options = {}) => {
 }
 
 
-
 interface ICoinSymbol {
   id: number,
   symbol: string,
@@ -24,7 +24,7 @@ interface ICoinSymbol {
 
 const CryptoMarketPage = () => {
   const dispatch = useDispatch()
-  const quotes: IQuote[] = useSelector(selectQuotes)
+  const quotes: TQuotes = useSelector(selectQuotes)
 
   const [selectedCoinId, updateCoinSymbol] = useState('')
 
@@ -50,12 +50,11 @@ const CryptoMarketPage = () => {
     )
 
   const onCoinSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    // limit tracking count to 10
-    if(quotes.length < 10) {
+    if(!quotes.has(e.target.value)) {
       updateCoinSymbol(e.target.value)
     }
   }
-
+  
   return (
     <div>
       <h1>Crypto market cap</h1>
@@ -66,8 +65,10 @@ const CryptoMarketPage = () => {
           })
         }
       </select>
-      <CryptoMarketTable quotes={quotes} />
 
+      <Container maxWidth="lg">
+        <CryptoMarketTable quotes={quotes} />
+      </Container>
     </div>
   )
 }

@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { enableMapSet } from "immer"
 import './index.css';
 import App from './App';
 import { store } from './redux/store';
-import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query'
+
+enableMapSet()
 
  // Create a client
  const queryClient = new QueryClient({

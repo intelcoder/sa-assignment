@@ -3,7 +3,7 @@ import { IQuote, TQuotes } from 'redux/CryptoMarketPage/types'
 import { cryptoFetcher } from 'services/api'
 
 interface IFetchQuoteProps {
-  selectedCoinId: number | string,
+  selectedCryptoId: number | string,
   onQuoteFetchSuccess: (a: IQuote) => void,
 }
 
@@ -23,22 +23,22 @@ type TSetSelectedCoinIds = (a: number[]) => void
 
 export const preFetchMultipleQuotes = async(
   queryClient: QueryClient,
-  coinIds: number[],
+  cryptoIds: number[],
   onQuotesFetchSuccess: TOnQuotesFetchSuccess,
-  setSelectedCoinIds: TSetSelectedCoinIds,
+  setSelectedCryptoIds: TSetSelectedCoinIds,
 ) => {
-  const callUniqKey = ['quotes', coinIds]
-  await queryClient.prefetchQuery(['quotes', coinIds], () =>
-    cryptoFetcher('/quotes', { params: { id: coinIds.join(',') } }))
+  const callUniqKey = ['quotes', cryptoIds]
+  await queryClient.prefetchQuery(['quotes', cryptoIds], () =>
+    cryptoFetcher('/quotes', { params: { id: cryptoIds.join(',') } }))
   const quotesResponse: IQuoteResponse | undefined = queryClient.getQueryData(callUniqKey)
   if(quotesResponse) {
     const newQuoteMap = new Map()
-    const selectedCoinIds = []
+    const selectedCryptoIds = []
     for(let [key, quote] of Object.entries(quotesResponse)) {
-      selectedCoinIds.push(quote.id)
+      selectedCryptoIds.push(quote.id)
       newQuoteMap.set(quote.id, quote)
     }
-    setSelectedCoinIds(selectedCoinIds)
+    setSelectedCryptoIds(selectedCryptoIds)
     onQuotesFetchSuccess(newQuoteMap)
   }
 }
@@ -51,17 +51,17 @@ export const useFetchSymbols = (
   useQuery(['symbols', params], () => cryptoFetcher('/map'))
 
 export const useFetchQuote = (props: IFetchQuoteProps) => {
-  const { selectedCoinId, onQuoteFetchSuccess } = props
+  const { selectedCryptoId, onQuoteFetchSuccess } = props
   return useQuery(
-    ['quotes', selectedCoinId],
-    () => cryptoFetcher('/quotes', { params: { id: selectedCoinId } }),
+    ['quotes', selectedCryptoId],
+    () => cryptoFetcher('/quotes', { params: { id: selectedCryptoId } }),
     {
-      enabled: Boolean(selectedCoinId),
+      enabled: Boolean(selectedCryptoId),
       keepPreviousData: true,
       onSuccess: (data) => {
-        if(data && data[selectedCoinId]) {
+        if(data && data[selectedCryptoId]) {
           // save it in reducer
-          onQuoteFetchSuccess(data[selectedCoinId])
+          onQuoteFetchSuccess(data[selectedCryptoId])
         }
       }
     },

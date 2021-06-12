@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import produce from 'immer'
 import { makeStyles } from '@material-ui/core/styles'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
-import { selectCoinId, deleteCoinId, setSelectedCoinIds } from 'redux/CryptoMarketPage/actions'
+import { selectCryptoId, deleteCryptoId, setSelectedCryptoIds } from 'redux/CryptoMarketPage/actions'
 import { IQuote, TQuotes } from 'redux/CryptoMarketPage/types'
-import { selectCoinIds } from 'redux/CryptoMarketPage/selectors'
+import { selectSelectedCryptoIds } from 'redux/CryptoMarketPage/selectors'
 import { useFetchQuote, useFetchSymbols, preFetchMultipleQuotes } from './apis'
 import CryptoMarketTable from 'components/CryptoMarketTable'
 import { useQueryClient } from 'react-query'
 
-interface ICoinSymbol {
+interface ICryptoSymbol {
   id: number,
   symbol: string,
 }
@@ -26,12 +26,11 @@ const useStyles = makeStyles({
 
 const CryptoMarketPage = () => {
   const classes = useStyles();
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const selectedCoins = useSelector(selectCoinIds)
-
+  const selectedCryptoIds = useAppSelector(selectSelectedCryptoIds)
   // states
-  const [selectedCoinId, updateCoinId] = useState('')
+  const [selectedCryptoId, updateCryptoId] = useState('')
   const [selectedQuotes, updateSelectedQuotes] = useState(new Map())
 
   // fetching symbol for the select
@@ -41,7 +40,7 @@ const CryptoMarketPage = () => {
   // fetching quotes when something is selected
   const { isFetching: isQuoteFetching } =
     useFetchQuote({
-      selectedCoinId,
+      selectedCryptoId,
       onQuoteFetchSuccess: (quote: IQuote) => {
         updateSelectedQuotes(produce(selectedQuotes, draft => {
           draft.set(quote.id, quote)
@@ -54,33 +53,33 @@ const CryptoMarketPage = () => {
     if(symbols && symbols.length && !selectedQuotes.size) {
       const onQuotesFetchSuccess = (newQuoteMap: TQuotes) => updateSelectedQuotes(newQuoteMap)
       // get first 5 coin symbols
-      const coinIds = symbols.slice(0, 5).map((symbol: { id: number }) => symbol.id)
+      const cryptoIds = symbols.slice(0, 5).map((symbol: { id: number }) => symbol.id)
       preFetchMultipleQuotes(
         queryClient,
-        coinIds,
+        cryptoIds,
         onQuotesFetchSuccess,
-        (coinIds) => dispatch(setSelectedCoinIds({ coinIds })),
+        (coinIds) => dispatch(setSelectedCryptoIds({ cryptoIds })),
       )
     }
-  }, [symbols, selectedCoins])
+  }, [symbols, selectedCryptoIds])
 
   // remove quote from table on delete icon clicked
-  const onDeleteQuoteClick = (coinId: number) => {
+  const onDeleteQuoteClick = (cryptoId: number) => {
     updateSelectedQuotes(produce(selectedQuotes, draft => {
       // keep minimum 1
-      if(draft.size > 1) draft.delete(coinId)
+      if(draft.size > 1) draft.delete(cryptoId)
     }))
     // in order to use redux
-    dispatch(deleteCoinId({ coinId }))
+    dispatch(deleteCryptoId({ cryptoId }))
   }
 
   const onCoinSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    const coinId = e.target.value
+    const cryptoId = e.target.value
     // max tracking count is 10
-    if(!selectedQuotes.has(coinId) && selectedQuotes.size < 10) {
-      updateCoinId(coinId)
+    if(!selectedQuotes.has(cryptoId) && selectedQuotes.size < 10) {
+      updateCryptoId(cryptoId)
       // save it in redux
-      dispatch(selectCoinId({ coinId }))
+      dispatch(selectCryptoId({ cryptoId: Number(cryptoId) }))
     }
   }
 
@@ -99,18 +98,17 @@ const CryptoMarketPage = () => {
               isSymbolFetching
                 ? <CircularProgress/>
                 : (
-                  <select onChange={onCoinSelected} value={selectedCoinId}>
+                  <select onChange={onCoinSelected} value={selectedCryptoId}>
                     <option value="" selected>Select coin</option>
                     {
-                      symbols && symbols.map((coin: ICoinSymbol) => {
-                        if(selectedCoins[coin.id]) return null
-                        return <option key={coin.id} value={coin.id}>{coin.symbol}</option>
+                      symbols && symbols.map((cryptoSymbol: ICryptoSymbol) => {
+                        if(selectedCryptoIds[cryptoSymbol.id]) return null
+                        return <option key={cryptoSymbol.id} value={cryptoSymbol.id}>{cryptoSymbol.symbol}</option>
                       })
                     }
                   </select>
                 )
             }
-
           </div>
         </Box>
         <CryptoMarketTable

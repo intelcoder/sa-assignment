@@ -1,5 +1,5 @@
 import {
-  SELECT_COIN_ID,
+  SELECT_CRYPTO_ID,
   DELETE_COIN_ID,
   SET_SELECTED_COIN_IDS,
   } from './actions'
@@ -7,7 +7,7 @@ import { IState } from './types'
 import produce from 'immer'
 
 const initialState = {
-  selectedCoinIds: {}
+  selectedCryptoIds: {}
 }
 
 const CryptoMarketPageReducer = (state: IState = initialState, action: any) => (
@@ -15,14 +15,14 @@ const CryptoMarketPageReducer = (state: IState = initialState, action: any) => (
     const { payload } = action
     switch(action.type) {
       case SET_SELECTED_COIN_IDS:
-        draft.selectedCoinIds = payload.coinIds
+        draft.selectedCryptoIds = payload.cryptoIds
         break
-      case SELECT_COIN_ID:
-        draft.selectedCoinIds[payload.coinId] = true
+      case SELECT_CRYPTO_ID:
+        draft.selectedCryptoIds[payload.cryptoId] = true
 
         break
       case DELETE_COIN_ID:
-        delete draft.selectedCoinIds[payload.coinId]
+        delete draft.selectedCryptoIds[payload.cryptoId]
         break
     }
   })

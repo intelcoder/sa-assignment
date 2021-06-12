@@ -75,8 +75,8 @@ const CryptoMarketTable = (props: IProps) => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
+            <TableCell />
+            <TableCell />
             <TableCell>Rank</TableCell>
             <TableCell align="left">Symbol</TableCell>
             <TableCell align="left">Price(USD)</TableCell>

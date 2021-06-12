@@ -17,7 +17,7 @@ export interface IQuote {
 
 export type TQuotes = Map<string, IQuote>
 export interface IState {
-  selectedCoinIds: {
+  selectedCryptoIds: {
     [key: number]: boolean
   }
 }

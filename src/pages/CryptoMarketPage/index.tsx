@@ -7,16 +7,12 @@ import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
 import { selectCryptoId, deleteCryptoId, setSelectedCryptoIds } from 'redux/CryptoMarketPage/actions'
-import { IQuote, TQuotes } from 'redux/CryptoMarketPage/types'
+import { IQuote, TQuotes } from 'types/cryptoMarket'
 import { selectSelectedCryptoIds } from 'redux/CryptoMarketPage/selectors'
 import { useFetchQuote, useFetchSymbols, preFetchMultipleQuotes } from './apis'
 import CryptoMarketTable from 'components/CryptoMarketTable'
+import CryptoSymbolDropdown from 'components/CryptoSymbolDropdown'
 import { useQueryClient } from 'react-query'
-
-interface ICryptoSymbol {
-  id: number,
-  symbol: string,
-}
 
 const useStyles = makeStyles({
   heading: {
@@ -73,13 +69,15 @@ const CryptoMarketPage = () => {
     dispatch(deleteCryptoId({ cryptoId }))
   }
 
-  const onCoinSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    const cryptoId = e.target.value
-    // max tracking count is 10
-    if(!selectedQuotes.has(cryptoId) && selectedQuotes.size < 10) {
-      updateCryptoId(cryptoId)
+  const handleSymbolSelect = (e: React.ChangeEvent<{ value: unknown }>) => {
+
+  }
+
+  const onItemSelect = (symbol: any) => {
+    if(!selectedQuotes.has(symbol.id) && selectedQuotes.size < 10) {
+      updateCryptoId(symbol.id)
       // save it in redux
-      dispatch(selectCryptoId({ cryptoId: Number(cryptoId) }))
+      dispatch(selectCryptoId({ cryptoId: Number(symbol.id) }))
     }
   }
 
@@ -93,23 +91,22 @@ const CryptoMarketPage = () => {
           justifyContent="space-between"
         >
           <Typography variant="h6" component="h1">Crypto Tracking</Typography>
-          <div>
-            {
-              isSymbolFetching
-                ? <CircularProgress/>
-                : (
-                  <select onChange={onCoinSelected} value={selectedCryptoId}>
-                    <option value="" selected>Select coin</option>
-                    {
-                      symbols && symbols.map((cryptoSymbol: ICryptoSymbol) => {
-                        if(selectedCryptoIds[cryptoSymbol.id]) return null
-                        return <option key={cryptoSymbol.id} value={cryptoSymbol.id}>{cryptoSymbol.symbol}</option>
-                      })
-                    }
-                  </select>
-                )
-            }
-          </div>
+          {
+            isSymbolFetching
+              ? <CircularProgress/>
+              : (
+                <div>
+                  <CryptoSymbolDropdown
+                    value={selectedCryptoId || ''}
+                    symbols={symbols || []}
+                    onItemSelect={onItemSelect}
+                    handleChange={handleSymbolSelect}
+                    selectedCryptoIds={selectedCryptoIds || {}}
+                  />
+                </div>
+              )
+          }
+
         </Box>
         <CryptoMarketTable
           quotes={selectedQuotes}

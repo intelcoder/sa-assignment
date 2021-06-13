@@ -14,8 +14,8 @@ import DeleteIcon from '@material-ui/icons/Delete'
 
 interface IProps {
   quotes: TQuotes,
-  isQuoteFetching: boolean,
-  onDeleteQuoteClick: (a: number) => void
+  onDeleteQuoteClick: (a: number) => void,
+  isQuoteFetching?: boolean,
 }
 
 const useStyles = makeStyles({
@@ -31,18 +31,20 @@ const useStyles = makeStyles({
 
 const CryptoMarketTable = (props: IProps) => {
   const classes = useStyles();
-  const { quotes, onDeleteQuoteClick } = props
+  const { quotes, onDeleteQuoteClick, isQuoteFetching } = props
+
 
   const renderRows = () => {
     let rows = []
     if(quotes.size) {
+      // row count
       let i = 1
       for(let quote of quotes.values()) {
         rows.push(
           <TableRow key={quote.symbol}>
-
             <TableCell padding="checkbox" scope="row">
               <IconButton
+                data-test-id="deleteBtn"
                 className={classes.deleteBtn}
                 onClick={() => onDeleteQuoteClick(quote.id)}
               >
@@ -88,6 +90,10 @@ const CryptoMarketTable = (props: IProps) => {
       </Table>
     </TableContainer>
   );
+}
+
+CryptoMarketTable.defaultProps = {
+  onDeleteQuoteClick: () => {}
 }
 
 export default CryptoMarketTable

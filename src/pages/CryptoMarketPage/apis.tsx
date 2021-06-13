@@ -1,5 +1,5 @@
 import { useQuery, QueryClient } from 'react-query'
-import { IQuote, TQuotes } from 'redux/CryptoMarketPage/types'
+import { IQuote, TQuotes } from 'types/cryptoMarket'
 import { cryptoFetcher } from 'services/api'
 
 interface IFetchQuoteProps {

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { enableMapSet } from "immer"
 import './index.css';
 import App from './App';
-import { store } from './redux/store';
+import { store } from 'redux/store';
 import * as serviceWorker from './serviceWorker';
 import {
   QueryClient,
@@ -14,7 +14,7 @@ import {
 enableMapSet()
 
  // Create a client
- const queryClient = new QueryClient({
+ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,

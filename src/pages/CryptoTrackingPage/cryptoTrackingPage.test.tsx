@@ -1,13 +1,15 @@
 import React from 'react'
-import { render, screen } from 'test/testUtils'
+import { render, screen, waitFor } from 'test/testUtils'
 import CryptoMarketPage from './index'
-import { useFetchSymbols, useFetchQuote, preFetchMultipleQuotes } from 'pages/CryptoMarketPage/apis'
-import { cryptoSymbol } from 'test/testData/cryptoMarket'
+import { useFetchSymbols, useFetchQuote, preFetchMultipleQuotes } from 'pages/CryptoTrackingPage/apis'
+import { quote } from 'test/testData/cryptoMarket'
 
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query'
+import userEvent from '@testing-library/user-event'
+
 
 // Create a client
 export const queryClient = new QueryClient({
@@ -38,6 +40,7 @@ describe('<CryptoMarketPage />', () => {
   beforeEach(() => {
     useFetchSymbols.mockImplementation(() => ({ data: null, isFetching: false }))
     useFetchQuote.mockImplementation(() => ({ data: null }))
+    preFetchMultipleQuotes.mockImplementation(() => ({ data: null }))
 
   })
 
@@ -47,10 +50,15 @@ describe('<CryptoMarketPage />', () => {
     expect(screen.getByTestId('symbolLoadingIcon')).toBeTruthy()
 
   })
-  it('shows symbol dropdown', () => {
-     useFetchSymbols.mockImplementation(() => ({ data: [cryptoSymbol] }))
-    const { debug } = render(<WithQueryClient />)
-    // cryptoSymbol
-    debug()
+  it('render table row from quotes', async() => {
+    React.useState = jest.fn()
+      .mockReturnValueOnce([1, () => {}])
+      .mockReturnValueOnce([new Map([
+        [quote.id, quote],
+        [2, {...quote, id: 4, symbol: 'DODGE'}]
+      ]), () => {}])
+    render(<WithQueryClient />)
+    expect(screen.getAllByTestId('marketTableRow')).toHaveLength(2)
+
   })
 })

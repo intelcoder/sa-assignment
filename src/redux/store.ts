@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import cryptoMarketPageReducer from 'redux/CryptoMarketPage/reducer'
+import cryptoTrackingReducer from 'redux/CryptoTrackingPage/reducer'
 
 export const store = configureStore({
   reducer: {
-    cryptoMarketData: cryptoMarketPageReducer
+    cryptoTracking: cryptoTrackingReducer
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import Dropdown, { IOption } from 'components/Dropdown'
-import { ISymbol } from 'types/cryptoMarket'
+import { ISymbol } from 'types/cryptoTracking'
 
 interface IProps {
   symbols: ISymbol[],
@@ -15,13 +15,13 @@ interface IProps {
 const CryptoSymbolDropdown = (
   {
     symbols,
-    handleChange,
     selectedCryptoIds,
     onItemSelect,
     value,
   }: IProps
 ) => {
   const options = useMemo(() => {
+    console.log(selectedCryptoIds)
     return symbols
       .map(symbol => ({
         value: symbol.id,
@@ -32,9 +32,16 @@ const CryptoSymbolDropdown = (
   }, [symbols, selectedCryptoIds])
   if(!options || !options.length) return null
   return (
-    <Dropdown label="Crypto Symbol" value={value} options={options} handleChange={handleChange} onItemSelect={onItemSelect} />
+    <Dropdown
+      label="Crypto Symbol"
+      value={value}
+      options={options}
+      onItemSelect={onItemSelect}
+    />
   )
 }
-
+CryptoSymbolDropdown.defaultProps = {
+  handleChange: () => {},
+}
 
 export default CryptoSymbolDropdown

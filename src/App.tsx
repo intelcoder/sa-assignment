@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import './App.css';
-import CryptoMarketPage from './pages/CryptoMarketPage'
+import CryptoMarketPage from './pages/CryptoTrackingPage'
 import Header from 'components/Header'
 
 function App() {

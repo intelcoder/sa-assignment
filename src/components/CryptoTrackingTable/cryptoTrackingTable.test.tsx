@@ -1,8 +1,8 @@
 import React from 'react'
+import { formatCurrency } from '@coingecko/cryptoformat'
 import { render, screen } from 'test/testUtils'
 import userEvent from '@testing-library/user-event'
 import { quote } from 'test/testData/cryptoMarket'
-import sinon from 'sinon'
 import { TQuotes } from 'types/cryptoMarket'
 import CryptoMarketTable from './index'
 
@@ -21,13 +21,13 @@ describe('<CryptoMarketTable />', () => {
     render(<CryptoMarketTable quotes={quotes} />)
     expect(screen.queryByText(quote.symbol)).toBeTruthy()
     expect(screen.queryByText(quote.cmc_rank)).toBeTruthy()
-    expect(screen.queryByText('$' + quote.quote.USD.price)).toBeTruthy()
+    expect(screen.queryByText(formatCurrency(quote.quote.USD.price, 'USD', 'en'))).toBeTruthy()
   })
 
   it('trigger click event on delete icon click', () => {
-    const onDeleteQuoteClick = sinon.spy()
+    const onDeleteQuoteClick =  jest.fn()
     render(<CryptoMarketTable quotes={quotes} onDeleteQuoteClick={onDeleteQuoteClick} />)
     userEvent.click(screen.getByTestId('deleteBtn'))
-    expect(onDeleteQuoteClick.calledOnce)
+    expect(onDeleteQuoteClick).toHaveBeenCalled()
   })
 })

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,8 +15,10 @@ interface IProps {
   value: string | number,
   label: string,
   options: IOption[] | [],
-  handleChange: (e: React.ChangeEvent<{ value: unknown }>) => void,
   onItemSelect?: (e: IOption) => void,
+  dropdownItemHeight: number,
+  dropdownWidth: number,
+  dropdownContainerHeight: number,
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
+    select: {
+      textAlign: 'left',
+      paddingLeft: '2px'
+    }
   }),
 );
 
@@ -35,11 +41,24 @@ const Dropdown = (
     value,
     label,
     options,
-    handleChange,
     onItemSelect = () => {},
+    dropdownItemHeight,
+    dropdownWidth,
+    dropdownContainerHeight,
   }: IProps
 ) => {
+  const [open, updateOpen] = useState(false)
+  const [selectedItemLabel, updateSelectedItemLabel] = useState('')
   const classes = useStyles();
+
+  const handleClose = () => {
+    updateOpen(false)
+  }
+
+  const handleOpen = () => {
+    updateOpen(true)
+  }
+
   const rowRenderer = (
     {
       index, // Index of row
@@ -52,7 +71,11 @@ const Dropdown = (
       <MenuItem
         key={key}
         style={style}
-        onClick={() => onItemSelect(option)}
+        onClick={() => {
+          onItemSelect(option)
+          updateOpen(false)
+          updateSelectedItemLabel(option.label)
+        }}
         value={option.value}
       >
         {option.label}
@@ -62,18 +85,21 @@ const Dropdown = (
   return (
     <FormControl className={classes.formControl}>
       <InputLabel>{label}</InputLabel>
-
-
       <Select
+        data-test-id="dropdown"
+        className={classes.select}
+        renderValue={() => selectedItemLabel}
         value={String(value)}
-        onChange={(e) => { console.log(e)}}
+        open={open}
+        onClose={handleClose}
+        onOpen={handleOpen}
       >
         {
           options && (
             <List
-              height={300}
-              rowHeight={36}
-              width={120}
+              height={dropdownContainerHeight}
+              rowHeight={dropdownItemHeight}
+              width={dropdownWidth}
               rowCount={options.length}
               rowRenderer={rowRenderer}
             />
@@ -83,6 +109,12 @@ const Dropdown = (
       </Select>
     </FormControl>
   )
+}
+
+Dropdown.defaultProps = {
+  dropdownItemHeight: 36,
+  dropdownWidth: 140,
+  dropdownContainerHeight: 300,
 }
 
 export default Dropdown

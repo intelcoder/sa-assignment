@@ -1,5 +1,5 @@
 import { useQuery, QueryClient } from 'react-query'
-import { IQuote, TQuotes } from 'types/cryptoMarket'
+import { IQuote, TQuotes } from 'types/cryptoTracking'
 import { cryptoFetcher } from 'services/api'
 
 interface IFetchQuoteProps {
@@ -34,7 +34,8 @@ export const preFetchMultipleQuotes = async(
   if(quotesResponse) {
     const newQuoteMap = new Map()
     const selectedCryptoIds = []
-    for(let [key, quote] of Object.entries(quotesResponse)) {
+    // eslint-disable-next-line
+    for(let [_, quote] of Object.entries(quotesResponse)) {
       selectedCryptoIds.push(quote.id)
       newQuoteMap.set(quote.id, quote)
     }
@@ -48,7 +49,7 @@ export const useFetchSymbols = (
     params = {}
   }: IFetchSymbolProps
 ) =>
-  useQuery(['symbols', params], () => cryptoFetcher('/map'))
+  useQuery(['symbols', params], () => cryptoFetcher('/map', { params: { sort: 'cmc_rank'}}))
 
 export const useFetchQuote = (props: IFetchQuoteProps) => {
   const { selectedCryptoId, onQuoteFetchSuccess } = props

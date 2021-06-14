@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import produce from 'immer'
 import { makeStyles } from '@material-ui/core/styles'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
@@ -6,11 +6,11 @@ import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
-import { selectCryptoId, deleteCryptoId, setSelectedCryptoIds } from 'redux/CryptoMarketPage/actions'
-import { IQuote, TQuotes } from 'types/cryptoMarket'
-import { selectSelectedCryptoIds } from 'redux/CryptoMarketPage/selectors'
+import { selectCryptoId, deleteCryptoId, setSelectedCryptoIds } from 'redux/CryptoTrackingPage/actions'
+import { IQuote, TQuotes } from 'types/cryptoTracking'
+import { selectSelectedCryptoIds } from 'redux/CryptoTrackingPage/selectors'
 import { useFetchQuote, useFetchSymbols, preFetchMultipleQuotes } from './apis'
-import CryptoMarketTable from 'components/CryptoMarketTable'
+import CryptoTrackingTable from 'components/CryptoTrackingTable'
 import CryptoSymbolDropdown from 'components/CryptoSymbolDropdown'
 import { useQueryClient } from 'react-query'
 
@@ -20,21 +20,20 @@ const useStyles = makeStyles({
   }
 });
 
-const CryptoMarketPage = () => {
+const CryptoTrackingPage = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const selectedCryptoIds = useAppSelector(selectSelectedCryptoIds)
-  // states
-  const [selectedCryptoId, updateCryptoId] = useState('')
-  const [selectedQuotes, updateSelectedQuotes] = useState(new Map())
 
+  // states
+  const [selectedCryptoId, updateCryptoId] = React.useState('')
+  const [selectedQuotes, updateSelectedQuotes] = React.useState(new Map())
   // fetching symbol for the select
   const { data: symbols, isFetching: isSymbolFetching } =
     useFetchSymbols({ params: { sort: 'cmc_rank' } })
 
-  // fetching quotes when something is selected
-  const { isFetching: isQuoteFetching } =
+  // fetching quotes when crypto is selected
     useFetchQuote({
       selectedCryptoId,
       onQuoteFetchSuccess: (quote: IQuote) => {
@@ -54,9 +53,10 @@ const CryptoMarketPage = () => {
         queryClient,
         cryptoIds,
         onQuotesFetchSuccess,
-        (coinIds) => dispatch(setSelectedCryptoIds({ cryptoIds })),
+        (cryptoIds) => dispatch(setSelectedCryptoIds({ cryptoIds })),
       )
     }
+      // eslint-disable-next-line
   }, [symbols, selectedCryptoIds])
 
   // remove quote from table on delete icon clicked
@@ -67,10 +67,6 @@ const CryptoMarketPage = () => {
     }))
     // in order to use redux
     dispatch(deleteCryptoId({ cryptoId }))
-  }
-
-  const handleSymbolSelect = (e: React.ChangeEvent<{ value: unknown }>) => {
-
   }
 
   const onItemSelect = (symbol: any) => {
@@ -99,7 +95,6 @@ const CryptoMarketPage = () => {
                     value={selectedCryptoId || ''}
                     symbols={symbols || []}
                     onItemSelect={onItemSelect}
-                    handleChange={handleSymbolSelect}
                     selectedCryptoIds={selectedCryptoIds || {}}
                   />
                 </div>
@@ -109,9 +104,8 @@ const CryptoMarketPage = () => {
         </Box>
         {
           selectedQuotes && (
-            <CryptoMarketTable
+            <CryptoTrackingTable
               quotes={selectedQuotes}
-              isQuoteFetching={isQuoteFetching}
               onDeleteQuoteClick={onDeleteQuoteClick}
             />
           )
@@ -121,4 +115,4 @@ const CryptoMarketPage = () => {
   )
 }
 
-export default CryptoMarketPage
+export default CryptoTrackingPage

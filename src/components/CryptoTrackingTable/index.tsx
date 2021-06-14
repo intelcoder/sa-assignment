@@ -9,14 +9,13 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
-import { TQuotes } from 'redux/CryptoMarketPage/types'
+import { TQuotes } from 'types/cryptoTracking'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 
 interface IProps {
   quotes: TQuotes,
   onDeleteQuoteClick: (a: number) => void,
-  isQuoteFetching?: boolean,
 }
 
 const useStyles = makeStyles({
@@ -30,9 +29,9 @@ const useStyles = makeStyles({
 
 });
 
-const CryptoMarketTable = (props: IProps) => {
-  const classes = useStyles();
-  const { quotes, onDeleteQuoteClick, isQuoteFetching } = props
+const CryptoTrackingTable = (props: IProps) => {
+  const classes = useStyles()
+  const { quotes, onDeleteQuoteClick } = props
 
 
   const renderRows = () => {
@@ -42,7 +41,7 @@ const CryptoMarketTable = (props: IProps) => {
       let i = 1
       for(let quote of quotes.values()) {
         rows.push(
-          <TableRow key={quote.symbol}>
+          <TableRow data-test-id="marketTableRow" key={quote.symbol}>
 
             <TableCell padding="checkbox" component="th" scope="row">
               <Box textAlign="center">
@@ -95,8 +94,8 @@ const CryptoMarketTable = (props: IProps) => {
   );
 }
 
-CryptoMarketTable.defaultProps = {
+CryptoTrackingTable.defaultProps = {
   onDeleteQuoteClick: () => {}
 }
 
-export default CryptoMarketTable
+export default CryptoTrackingTable

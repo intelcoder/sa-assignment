@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import produce from 'immer'
+import { toast } from 'react-toastify';
 import { makeStyles } from '@material-ui/core/styles'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import Container from '@material-ui/core/Container'
@@ -61,16 +62,23 @@ const CryptoTrackingPage = () => {
 
   // remove quote from table on delete icon clicked
   const onDeleteQuoteClick = (cryptoId: number) => {
+    if(selectedQuotes.size <= 1) {
+      return toast.warn('You must have one crypto on tracking', { })
+    }
     updateSelectedQuotes(produce(selectedQuotes, draft => {
       // keep minimum 1
-      if(draft.size > 1) draft.delete(cryptoId)
+      draft.delete(cryptoId)
     }))
     // in order to use redux
     dispatch(deleteCryptoId({ cryptoId }))
   }
 
   const onItemSelect = (symbol: any) => {
-    if(!selectedQuotes.has(symbol.id) && selectedQuotes.size < 10) {
+
+    if(selectedQuotes.size >= 10) {
+      return toast.warn('You cannot track more than 10 crypto', { })
+    }
+    if(!selectedQuotes.has(symbol.id)) {
       updateCryptoId(symbol.id)
       // save it in redux
       dispatch(selectCryptoId({ cryptoId: Number(symbol.id) }))

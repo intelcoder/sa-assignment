@@ -80,7 +80,6 @@ const CryptoMarketPage = () => {
       dispatch(selectCryptoId({ cryptoId: Number(symbol.id) }))
     }
   }
-
   return (
     <main>
       <Container maxWidth="lg">
@@ -93,7 +92,7 @@ const CryptoMarketPage = () => {
           <Typography variant="h6" component="h1">Crypto Tracking</Typography>
           {
             isSymbolFetching
-              ? <CircularProgress/>
+              ? <CircularProgress data-test-id="symbolLoadingIcon"/>
               : (
                 <div>
                   <CryptoSymbolDropdown
@@ -108,11 +107,15 @@ const CryptoMarketPage = () => {
           }
 
         </Box>
-        <CryptoMarketTable
-          quotes={selectedQuotes}
-          isQuoteFetching={isQuoteFetching}
-          onDeleteQuoteClick={onDeleteQuoteClick}
-        />
+        {
+          selectedQuotes && (
+            <CryptoMarketTable
+              quotes={selectedQuotes}
+              isQuoteFetching={isQuoteFetching}
+              onDeleteQuoteClick={onDeleteQuoteClick}
+            />
+          )
+        }
       </Container>
     </main>
   )

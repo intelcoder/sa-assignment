@@ -1,3 +1,4 @@
+import React from 'react'
 import { store } from 'redux/store'
 import { render, configure } from '@testing-library/react'
 import { Provider } from 'react-redux'
@@ -6,13 +7,15 @@ import '@testing-library/jest-dom'
 configure({ testIdAttribute: 'data-test-id' })
 
 // eslint-disable-next-line
-const AllProviders = ({ children }) => (
+const AllProviders = ({ children }: { children: React.ReactChildren}) => (
   <Provider store={store}>
     {children}
-    </Provider>
+  </Provider>
 )
 
-const customRender = (ui: any, options: any) => (
+
+
+const customRender = (ui: any, options?: any) => (
   render(ui, { wrapper: AllProviders, ...options })
 )
 

@@ -22,7 +22,6 @@ const CryptoSymbolDropdown = (
   }: IProps
 ) => {
   const options = useMemo(() => {
-
     return symbols
       .map(symbol => ({
         value: symbol.id,

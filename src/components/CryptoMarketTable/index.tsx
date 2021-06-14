@@ -21,7 +21,7 @@ interface IProps {
 const useStyles = makeStyles({
   deleteBtn: {
     padding: '6px',
-    marginLeft: '4px',
+    marginLeft: '16px',
   },
   table: {
     minWidth: 650,
@@ -42,15 +42,7 @@ const CryptoMarketTable = (props: IProps) => {
       for(let quote of quotes.values()) {
         rows.push(
           <TableRow key={quote.symbol}>
-            <TableCell padding="checkbox" scope="row">
-              <IconButton
-                data-test-id="deleteBtn"
-                className={classes.deleteBtn}
-                onClick={() => onDeleteQuoteClick(quote.id)}
-              >
-                <DeleteIcon/>
-              </IconButton>
-            </TableCell>
+
             <TableCell padding="checkbox" component="th" scope="row">
               <Box textAlign="center">
                 {i++}
@@ -65,6 +57,15 @@ const CryptoMarketTable = (props: IProps) => {
             <TableCell component="th" scope="row">
               ${quote.quote.USD.price}
             </TableCell>
+            <TableCell padding="checkbox" scope="row">
+              <IconButton
+                data-test-id="deleteBtn"
+                className={classes.deleteBtn}
+                onClick={() => onDeleteQuoteClick(quote.id)}
+              >
+                <DeleteIcon/>
+              </IconButton>
+            </TableCell>
           </TableRow>
         )
       }
@@ -77,11 +78,12 @@ const CryptoMarketTable = (props: IProps) => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell />
+
+            <TableCell>Count</TableCell>
             <TableCell>Rank</TableCell>
             <TableCell align="left">Symbol</TableCell>
             <TableCell align="left">Price(USD)</TableCell>
+            <TableCell>Delete</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

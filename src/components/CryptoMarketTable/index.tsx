@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCurrency } from '@coingecko/cryptoformat'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -55,7 +56,7 @@ const CryptoMarketTable = (props: IProps) => {
               {quote.symbol}
             </TableCell>
             <TableCell component="th" scope="row">
-              ${quote.quote.USD.price}
+              {formatCurrency(quote.quote.USD.price, "USD", 'en')}
             </TableCell>
             <TableCell padding="checkbox" scope="row">
               <IconButton

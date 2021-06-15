@@ -14,34 +14,15 @@ interface IFetchSymbolProps {
   }
 }
 
-interface IQuoteResponse {
-  [key: number]: IQuote[],
-}
-
-type TOnQuotesFetchSuccess = (a: TQuotes) => void
-type TSetSelectedCoinIds = (a: number[]) => void
-
 export const preFetchMultipleQuotes = async(
   queryClient: QueryClient,
   cryptoIds: number[],
-  onQuotesFetchSuccess: TOnQuotesFetchSuccess,
-  setSelectedCryptoIds: TSetSelectedCoinIds,
-) => {
+): Promise<TQuotes | any> => {
   const callUniqKey = ['quotes', cryptoIds]
   await queryClient.prefetchQuery(['quotes', cryptoIds], () =>
     cryptoFetcher('/quotes', { params: { id: cryptoIds.join(',') } }))
-  const quotesResponse: IQuoteResponse | undefined = queryClient.getQueryData(callUniqKey)
-  if(quotesResponse) {
-    const newQuoteMap = new Map()
-    const selectedCryptoIds = []
-    // eslint-disable-next-line
-    for(let [_, quote] of Object.entries(quotesResponse)) {
-      selectedCryptoIds.push(quote.id)
-      newQuoteMap.set(quote.id, quote)
-    }
-    setSelectedCryptoIds(selectedCryptoIds)
-    onQuotesFetchSuccess(newQuoteMap)
-  }
+  const quoteResponse = await queryClient.getQueryData(callUniqKey)
+  return quoteResponse
 }
 
 export const useFetchSymbols = (

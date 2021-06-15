@@ -13,3 +13,4 @@ export const selectCryptoId = (payload: { cryptoId: number }) =>
 export const DELETE_COIN_ID = 'deleteCryptoId'
 export const deleteCryptoId = (payload: { cryptoId: number }) =>
   actionCreator(DELETE_COIN_ID, { payload })
+

@@ -3,6 +3,7 @@ import { render, screen } from 'test/testUtils'
 import userEvent from '@testing-library/user-event'
 import CryptoSymbolDropdown from 'components/CryptoSymbolDropdown'
 import { cryptoSymbol } from 'test/testData/cryptoMarket'
+import { IOption } from 'components/Dropdown'
 
 const dodge =  {
   ...cryptoSymbol,
@@ -18,6 +19,13 @@ const symbols = [
 const getDropdownInput = () => screen.getByTestId('dropdown').querySelector('.MuiInput-input')
 
 describe('<CryptoSymbolDropdown />', () => {
+  let openDropdownInput: (e: void) => void
+  beforeEach(() => {
+    openDropdownInput = () => {
+      const dropdownInput = getDropdownInput()
+      if(dropdownInput) userEvent.click(dropdownInput)
+    }
+  })
   it('shows dropdown item on dropdown open', () => {
     render(<CryptoSymbolDropdown
       symbols={symbols}
@@ -49,6 +57,19 @@ describe('<CryptoSymbolDropdown />', () => {
       label: dodge.symbol,
       id: dodge.id,
     })
+  })
+  it('should not show already selected item on dropdown', () => {
+    const onItemSelect = jest.fn()
+    const dodgeCoinId = 10
+    render(<CryptoSymbolDropdown
+      symbols={symbols}
+      selectedCryptoIds={{ [dodgeCoinId]: true}}
+      onItemSelect={onItemSelect}
+      value={''}
+    />)
+    openDropdownInput()
+    expect(screen.queryByText('DODGE')).not.toBeInTheDocument()
+
   })
 
 

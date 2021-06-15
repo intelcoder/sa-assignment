@@ -16,7 +16,7 @@ const options = [
   }
 ]
 
-const getDropdownInput = () => screen.getByTestId('dropdown').querySelector('.MuiInput-input')
+export const getDropdownInput = () => screen.getByTestId('dropdown').querySelector('.MuiInput-input')
 
 describe('<Dropdown />', () => {
   const label = 'Test Label'

@@ -25,7 +25,7 @@ describe('<CryptoMarketTable />', () => {
   })
 
   it('trigger click event on delete icon click', () => {
-    const onDeleteQuoteClick =  jest.fn()
+    const onDeleteQuoteClick = jest.fn()
     render(<CryptoMarketTable quotes={quotes} onDeleteQuoteClick={onDeleteQuoteClick} />)
     userEvent.click(screen.getByTestId('deleteBtn'))
     expect(onDeleteQuoteClick).toHaveBeenCalled()

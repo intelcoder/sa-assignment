@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import produce from 'immer'
+import { useQueryClient } from 'react-query'
 import { toast } from 'react-toastify';
 import { makeStyles } from '@material-ui/core/styles'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
@@ -13,7 +14,7 @@ import { selectSelectedCryptoIds } from 'redux/CryptoTrackingPage/selectors'
 import { useFetchQuote, useFetchSymbols, preFetchMultipleQuotes } from './apis'
 import CryptoTrackingTable from 'components/CryptoTrackingTable'
 import CryptoSymbolDropdown from 'components/CryptoSymbolDropdown'
-import { useQueryClient } from 'react-query'
+
 
 const useStyles = makeStyles({
   heading: {
@@ -47,19 +48,26 @@ const CryptoTrackingPage = () => {
   // fetch first 5 coin quotes and set selectedQuotes
   useEffect(() => {
     if(symbols && symbols.length && !selectedQuotes.size) {
-      const onQuotesFetchSuccess = (newQuoteMap: TQuotes) => updateSelectedQuotes(newQuoteMap)
       // get first 5 coin symbols
       const cryptoIds = symbols.slice(0, 5).map((symbol: { id: number }) => symbol.id)
       preFetchMultipleQuotes(
         queryClient,
         cryptoIds,
-        onQuotesFetchSuccess,
-        (cryptoIds) => dispatch(setSelectedCryptoIds({ cryptoIds })),
-      )
+      ).then((quotes: TQuotes) => {
+        const newQuoteMap = new Map()
+        const selectedCryptoIds = []
+        // eslint-disable-next-line
+        for(let [_, quote] of Object.entries(quotes)) {
+          selectedCryptoIds.push(quote.id)
+          newQuoteMap.set(quote.id, quote)
+        }
+        dispatch(setSelectedCryptoIds({ cryptoIds: selectedCryptoIds}))
+
+        updateSelectedQuotes(newQuoteMap)
+      })
     }
       // eslint-disable-next-line
   }, [symbols, selectedCryptoIds])
-
   // remove quote from table on delete icon clicked
   const onDeleteQuoteClick = (cryptoId: number) => {
     if(selectedQuotes.size <= 1) {
@@ -73,8 +81,8 @@ const CryptoTrackingPage = () => {
     dispatch(deleteCryptoId({ cryptoId }))
   }
 
-  const onItemSelect = (symbol: any) => {
 
+  const onItemSelect = (symbol: any) => {
     if(selectedQuotes.size >= 10) {
       return toast.warn('You cannot track more than 10 crypto', { })
     }

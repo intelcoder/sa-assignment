@@ -74,7 +74,7 @@ const CryptoTrackingTable = (props: IProps) => {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} data-test-id="CryptoTrackingTable">
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>

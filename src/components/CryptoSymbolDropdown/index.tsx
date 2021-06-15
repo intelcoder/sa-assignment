@@ -21,14 +21,13 @@ const CryptoSymbolDropdown = (
   }: IProps
 ) => {
   const options = useMemo(() => {
-    console.log(selectedCryptoIds)
     return symbols
       .map(symbol => ({
         value: symbol.id,
         label: symbol.symbol,
         id: symbol.id,
       }))
-      .filter(symbol => !selectedCryptoIds[symbol.id])
+      .filter(symbol => Boolean(!selectedCryptoIds[symbol.id]))
   }, [symbols, selectedCryptoIds])
   if(!options || !options.length) return null
   return (
